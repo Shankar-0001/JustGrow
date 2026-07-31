@@ -1,20 +1,14 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# JustGrow
 
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/dafbd9e5-f106-4369-ada1-f54eafdfb3c2
+Marketing agency website for JustGrow, covering SEO, web development, paid marketing, social media, email marketing, digital PR, and reputation management.
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+**Prerequisites:** Node.js 20 or later
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Install dependencies: `npm install`
+2. Optionally copy `.env.example` to `.env.local` and set `VITE_GOOGLE_APPS_SCRIPT_URL` for form submissions.
+3. Start the application: `npm run dev`
+
+The development server opens `http://localhost:3000` automatically.
