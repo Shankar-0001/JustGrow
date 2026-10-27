@@ -1,5 +1,13 @@
 # Verification report
 
+## Vercel production indexing — 27 October 2026
+
+The live sitemap returned HTTP 200 with no URLs, robots.txt blocked all crawling, and the homepage and SEO overview contained noindex metadata. Canonicals were correct. The deployed build had used the previous preview default because production indexing was not enabled.
+
+Added a shared build/runtime indexing decision: Vercel production enables indexing by default, while preview, development and custom staging environments stay excluded even if SITE_INDEXABLE=true is inherited. Explicit SITE_INDEXABLE=false still disables production indexing; other hosts retain the explicit switch. Updated the example environment file and README accordingly. No content, layout or form behavior changed.
+
+Type checking, the Vercel production simulation and all 22 tests passed. HTTP validation covered all 20 pages, 98 redirect variants, indexable metadata/headers and the exact 19 canonical sitemap URLs. The thank-you page remains noindex and excluded. Evidence: [production HTTP report](../.qa/audit/vercel-production-indexing/http.json). Platform reference: [Vercel system environment variables](https://vercel.com/docs/environment-variables/system-environment-variables).
+
 ## URL structure — 27 October 2026
 
 Preserved the existing lowercase, descriptive route hierarchy and added allowlisted permanent 308 redirects for duplicate slashes, case variants, missing trailing slashes and `index.html` variants. Redirects retain query strings and go directly to the preferred page. Unknown and unsafe paths remain 404; no new service slug aliases were invented.

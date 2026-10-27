@@ -5,18 +5,20 @@ import { config } from 'dotenv';
 import { handleLead } from './api/lead-handler';
 import { sendStatic, assertIndexingMode } from './api/static-delivery';
 import { canonicalPagePath } from './api/page-routing';
+import { isSiteIndexable } from './api/indexing';
 config({ path: '.env.local', quiet: true });
 config({ quiet: true });
 async function startServer() {
   const app = express();
   const production = process.env.NODE_ENV === 'production';
+  const indexable = isSiteIndexable();
   const port = Number(process.env.PORT || 3000);
   app.disable('x-powered-by');
   app.use(express.json({ limit: '20kb' }));
   app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    if (!production || process.env.SITE_INDEXABLE !== 'true' || req.path.replace(/\/+$/, '') === '/thank-you') res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    if (!production || !indexable || req.path.replace(/\/+$/, '') === '/thank-you') res.setHeader('X-Robots-Tag', 'noindex, nofollow');
     next();
   });
   app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
@@ -34,9 +36,9 @@ async function startServer() {
   } else {
     const dist = path.resolve('dist');
     const manifest = JSON.parse(readFileSync(path.join(dist, 'build-manifest.json'), 'utf8'));
-    assertIndexingMode(manifest, process.env.SITE_INDEXABLE === 'true');
+    assertIndexingMode(manifest, indexable);
     const pageRoutes = new Set<string>(manifest.routes);
-    app.get('/robots.txt', (_req, res) => res.type('text').send(process.env.SITE_INDEXABLE === 'true' ? 'User-agent: *\nAllow: /\nSitemap: https://www.justgrow.in/sitemap.xml\n' : 'User-agent: *\nDisallow: /\n'));
+    app.get('/robots.txt', (_req, res) => res.type('text').send(indexable ? 'User-agent: *\nAllow: /\nSitemap: https://www.justgrow.in/sitemap.xml\n' : 'User-agent: *\nDisallow: /\n'));
     app.get('/assets/:file', (req, res, next) => {
       if (!/^[a-zA-Z0-9_-]+\.(js|css)$/.test(req.params.file)) return next();
       const file = path.join(dist, 'assets', req.params.file);

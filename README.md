@@ -9,7 +9,7 @@ Multipage agency site built with React, Vite and Express. The navy-and-blue layo
 - `npm test` (page checks require the build output)
 - `npm start` serves the production build and the enquiry API.
 
-Preview builds default to noindex. For the actual https://www.justgrow.in deployment, set `SITE_INDEXABLE=true` at **build time and runtime**, then rebuild. Keep previews false. The prerender script and server read `.env.local` and `.env`, with existing environment variables taking priority.
+Vercel production deployments enable indexing automatically using `VERCEL_TARGET_ENV` / `VERCEL_ENV`; Vercel previews and development stay noindex. Local builds default to noindex. An explicit `SITE_INDEXABLE=false` disables indexing even in production: remove it or set it to true in Vercel's Production environment and redeploy if present. Keep Vercel's system environment variables exposed. For other production hosts serving https://www.justgrow.in, set `SITE_INDEXABLE=true` at **build time and runtime**, then rebuild. The prerender script and server share `api/indexing.ts` and read `.env.local` and `.env`, with existing environment variables taking priority.
 
 The build includes 19 indexable content pages, a `/thank-you/` utility page and the 404. The thank-you page always has noindex metadata/headers and is excluded from the sitemap, including in production.
 

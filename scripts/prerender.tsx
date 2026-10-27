@@ -9,10 +9,11 @@ import App from '../src/App';
 import { business } from '../src/data/site';
 import { metadataFor, publicRoutes, allRoutes } from '../src/data/metadata';
 import { structuredDataFor } from '../src/data/structuredData';
+import { isSiteIndexable } from '../api/indexing';
 
 const template = readFileSync('dist/index.html', 'utf8').replace(/<title>[\s\S]*?<\/title>/, '').replace(/<meta name="description"[^>]*>/, '');
 const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const indexable = process.env.SITE_INDEXABLE === 'true';
+const indexable = isSiteIndexable();
 for (const route of [...allRoutes, '/404/']) {
   const meta = metadataFor(route);
   const canonical = business.origin + route;
