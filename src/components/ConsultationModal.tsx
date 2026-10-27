@@ -88,7 +88,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
       const selectedService = SERVICES_DATA.find(s => s.id === formData.serviceId)?.title || formData.serviceId;
       const combinedTime = `${formData.timeSlot} ${formData.timeZone}`;
 
-      await submitLeadToGoogleSheet({
+      const result = await submitLeadToGoogleSheet({
         formType: 'Schedule Your Growth Session',
         fullName: formData.name,
         email: formData.email,
@@ -101,7 +101,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
       });
 
       setIsSubmitting(false);
-      setStep(3);
+      if (result.success) {
+        setStep(3);
+      } else {
+        setErrorMsg(result.message || 'Unable to submit your request. Please try again.');
+      }
     }
   };
 
@@ -330,4 +334,3 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     </div>
   );
 };
-

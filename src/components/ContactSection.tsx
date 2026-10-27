@@ -57,7 +57,7 @@ export const ContactSection: React.FC = () => {
 
     const selectedServiceName = SERVICES_DATA.find(s => s.id === formState.serviceInterested)?.title || formState.serviceInterested;
 
-    await submitLeadToGoogleSheet({
+    const result = await submitLeadToGoogleSheet({
       formType: 'Send Us a Message',
       fullName: formState.fullName,
       email: formState.businessEmail,
@@ -68,7 +68,11 @@ export const ContactSection: React.FC = () => {
     });
 
     setIsSubmitting(false);
-    setSubmitted(true);
+    if (result.success) {
+      setSubmitted(true);
+    } else {
+      setErrorMsg(result.message || 'Unable to send your message. Please try again.');
+    }
   };
 
   return (

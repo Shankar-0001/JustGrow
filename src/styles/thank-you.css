@@ -1,0 +1,17 @@
+.thank-you-page { padding: clamp(64px, 10vw, 120px) 0; background: linear-gradient(135deg, #0b1729, #152e56); color: #fff; }
+.thank-you-content { max-width: 780px; text-align: center; }
+.thank-you-content .eyebrow { color: #aac7ff; }
+.thank-you-icon { display: block; margin: 0 auto 24px; color: #aac7ff; }
+.thank-you-content h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.12; margin-bottom: 24px; }
+.thank-you-content p { color: #e5edfc; font-size: 1.125rem; line-height: 1.7; }
+.thank-you-actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 24px; margin-top: 32px; }
+.thank-you-actions .text-link { color: #fff; }
+.thank-you-page .button, .thank-you-dialog .button { background: #2455d9; color: #fff; min-height: 48px; }
+.thank-you-dialog { width: min(440px, calc(100% - 40px)); max-height: calc(100dvh - 40px); margin: auto; padding: clamp(24px, 5vw, 36px); border: 1px solid #d6e2f5; border-radius: 24px; color: #10213b; background: #fff; text-align: center; box-shadow: 0 24px 80px #07122240; overflow-y: auto; }
+.thank-you-dialog::backdrop { background: #071222b3; }
+.thank-you-dialog .thank-you-icon { color: #2455d9; margin-bottom: 20px; }
+.thank-you-dialog h2 { font-size: clamp(1.5rem, 4vw, 1.875rem); line-height: 1.25; margin: 0 0 16px; }
+.thank-you-dialog p { font-size: 1.0625rem; line-height: 1.65; margin-bottom: 24px; }
+.thank-you-dialog .button { width: 100%; }
+.thank-you-dialog .button:focus-visible { outline: 3px solid #10213b; outline-offset: 4px; }
+body:has(.thank-you-dialog[open]) { overflow: hidden; }

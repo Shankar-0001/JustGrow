@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f5f5f5"/>
+  <g font-family="Arial,Helvetica,sans-serif"><text x="70" y="94" font-weight="800" font-size="46" letter-spacing="-2" fill="#0f172a">Just<tspan fill="#2563eb">Grow</tspan></text><text x="70" y="123" font-size="17" fill="#525252">Grow Smarter. Grow Faster.</text>
+  <text x="70" y="240" font-weight="700" font-size="57" letter-spacing="-2" fill="#171717">Reach the right</text><text x="70" y="305" font-weight="700" font-size="57" letter-spacing="-2" fill="#171717">customers.</text><text x="70" y="385" font-weight="700" font-size="57" letter-spacing="-2" fill="#525252">Turn interest</text><text x="70" y="450" font-weight="700" font-size="57" letter-spacing="-2" fill="#525252">into enquiries.</text>
+  <rect x="705" y="185" width="425" height="95" rx="15" fill="#fff" stroke="#d4d4d4"/><text x="735" y="225" font-size="22" font-weight="700" fill="#171717">SEO &amp; AI Search</text><text x="735" y="253" font-size="17" fill="#525252">Help customers find your business.</text>
+  <rect x="705" y="300" width="425" height="95" rx="15" fill="#fff" stroke="#d4d4d4"/><text x="735" y="340" font-size="22" font-weight="700" fill="#171717">Paid Advertising</text><text x="735" y="368" font-size="17" fill="#525252">Reach people who need your offer.</text>
+  <rect x="705" y="415" width="425" height="95" rx="15" fill="#fff" stroke="#d4d4d4"/><text x="735" y="455" font-size="22" font-weight="700" fill="#171717">Website Development</text><text x="735" y="483" font-size="17" fill="#525252">Make it easier to contact you.</text>
+  <text x="70" y="562" font-size="20" fill="#525252">www.justgrow.in</text><text x="705" y="562" font-size="20" fill="#525252">Contact Us: +91 82525 53686</text></g>
+</svg>

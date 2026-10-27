@@ -1,0 +1,4 @@
+# Generated HTML must stay identical to React's server-rendered markup.
+dist/
+node_modules/
+.qa/
