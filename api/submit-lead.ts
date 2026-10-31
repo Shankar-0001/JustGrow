@@ -1,7 +1,7 @@
 import { handleLead } from './lead-handler';
 
 export default async function handler(req: any, res?: any) {
-  // 1. Vercel Node.js Serverless Function runtime: handler(req, res)
+  // 1. Standard Node HTTP handler: handler(req, res)
   if (res && typeof res.status === 'function') {
     if (req.method !== 'POST') {
       res.setHeader?.('Allow', 'POST');
@@ -17,7 +17,7 @@ export default async function handler(req: any, res?: any) {
     }
   }
 
-  // 2. Web / Edge Runtime: handler(request: Request)
+  // 2. Fetch API handler: handler(request: Request)
   const request = req as Request;
   if (request.method !== 'POST') {
     return Response.json(
@@ -35,5 +35,4 @@ export default async function handler(req: any, res?: any) {
   }
 }
 
-// Preserve backward-compatibility for Fetch adapters
 (handler as any).fetch = (request: Request) => handler(request);
