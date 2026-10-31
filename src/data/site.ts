@@ -11,5 +11,5 @@ export type Service = {
   inputs: string; measures: string; timing: string; example: [string, string][];
   faqs: [string, string][]; related: string[]; cta: string; visual: string;
 };
-export const servicePath = (s: Service) => s.group === 'web' ? '/website-development/' : `/${s.group}/${s.slug}/`;
+export const servicePath = (s: Pick<Service, 'group' | 'slug'>) => s.group === 'web' ? '/website-development/' : `/${s.group}/${s.slug}/`;
 export const enquiryPath = (slug?: string) => `/contact/${slug ? `?service=${encodeURIComponent(slug)}` : ''}`;

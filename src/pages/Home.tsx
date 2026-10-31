@@ -3,7 +3,7 @@ import { Store, Factory, Sprout, Target } from 'lucide-react';
 import { CTA, FAQs } from '../components/SiteLayout';
 import { BusinessGrowthVisual } from '../components/BusinessGrowthVisual';
 import { HomeServiceVisual } from '../components/HomeServiceVisual';
-import { services } from '../data/services';
+import { serviceCatalog as services } from '../data/serviceCatalog';
 import { servicePath } from '../data/site';
 
 const homeFaqs: [string, string][] = [

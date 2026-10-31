@@ -14,6 +14,7 @@ writeFileSync(routeFile, JSON.stringify(inventory, null, 2));
 const routes = process.env.AUDIT_ROUTES ? JSON.parse(process.env.AUDIT_ROUTES) : inventory;
 const profiles = process.env.AUDIT_PROFILE ? [process.env.AUDIT_PROFILE] : ['mobile', 'desktop'];
 const runs = Number(process.env.AUDIT_RUNS || 1);
+const origin = process.env.AUDIT_ORIGIN || 'http://127.0.0.1:3100';
 const chrome = spawn('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=9226', `--user-data-dir=${path.join(output, 'profile')}`, 'about:blank'], { windowsHide: true, stdio: 'ignore' });
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 const results = [];
@@ -26,7 +27,7 @@ try {
     if (existsSync(file)) lhr = JSON.parse(readFileSync(file, 'utf8'));
     else {
       try {
-        const result = await lighthouse('http://127.0.0.1:3100' + route, { port: 9226, logLevel: 'error', output: 'json', onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'] }, profile === 'desktop' ? desktop : undefined);
+        const result = await lighthouse(origin + route, { port: 9226, logLevel: 'error', output: 'json', onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'] }, profile === 'desktop' ? desktop : undefined);
         lhr = result.lhr;
         writeFileSync(file, JSON.stringify(lhr));
       } catch (error) { results.push({ route, profile, error: String(error) }); console.log(name + ': FAILED ' + error); continue; }

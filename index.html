@@ -3,11 +3,19 @@
 <head>
 <meta charset="UTF-8"/>
 <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WRZZBS6F');</script>
+<script>(function(w,d){
+w.dataLayer=w.dataLayer||[];
+var loaded=false;
+function load(){if(loaded)return;loaded=true;
+w.removeEventListener('pointerdown',load);w.removeEventListener('keydown',load);
+w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var j=d.createElement('script');j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id=GTM-WRZZBS6F';d.head.appendChild(j);}
+function ready(){w.requestAnimationFrame(function(){w.requestAnimationFrame(function(){
+if(w.requestIdleCallback)w.requestIdleCallback(load,{timeout:1500});else w.setTimeout(load,0);
+});});}
+w.addEventListener('pointerdown',load,{once:true,passive:true});w.addEventListener('keydown',load,{once:true});
+if(d.readyState==='complete')ready();else w.addEventListener('load',ready,{once:true});
+})(window,document);</script>
 <!-- End Google Tag Manager -->
 <meta name="google-site-verification" content="IFXVYNLh_Cj657cUlR8XBlRtASCYuK-9YEArqsBfW7A" />
 <meta name="msvalidate.01" content="9A5042895EA79FC3FCB50C97677C299D" />

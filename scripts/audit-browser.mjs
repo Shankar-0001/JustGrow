@@ -42,7 +42,7 @@ try {
   const viewport = async width => send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false });
   const screenshot = async name => { const data = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }); writeFileSync(path.join(output, name + '.png'), Buffer.from(data.data, 'base64')); };
 
-  const routes = JSON.parse(readFileSync('dist/build-manifest.json', 'utf8')).routes;
+  const routes = process.env.AUDIT_ROUTES ? JSON.parse(process.env.AUDIT_ROUTES) : JSON.parse(readFileSync('dist/build-manifest.json', 'utf8')).routes;
   const report={date:new Date().toISOString(),browser:await send('Browser.getVersion'),routes:[],axe:[],errors};
   const axePath=path.resolve('.qa/audit-tools/node_modules/axe-core/axe.min.js');
   for(const route of routes){

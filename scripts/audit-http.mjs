@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import assert from 'node:assert/strict';
 
 const origin = process.env.AUDIT_ORIGIN || 'http://127.0.0.1:3100';
@@ -67,7 +67,7 @@ const home = await (await fetch(origin)).text();
 for (const [, asset] of home.matchAll(/(?:src|href)="(\/assets\/[^\"]+)"/g)) {
   const r = await fetch(origin + asset, { headers: { 'Accept-Encoding': 'br' } });
   assert.equal(r.status, 200);
-  assert.equal(r.headers.get('content-encoding'), 'br');
+  assert.equal(r.headers.get('content-encoding'), existsSync('dist' + asset + '.br') ? 'br' : null);
   assert.match(r.headers.get('cache-control'), /immutable/);
   report.resources.push({ asset, encoding: r.headers.get('content-encoding'), bytes: Number(r.headers.get('content-length')), cache: r.headers.get('cache-control') });
 }

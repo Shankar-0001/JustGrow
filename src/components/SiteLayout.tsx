@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
-import { services } from '../data/services';
+import { serviceCatalog as services } from '../data/serviceCatalog';
 import { business, enquiryPath, servicePath } from '../data/site';
 import { Logo } from './Logo';
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { services } from '../data/services';
+import { serviceCatalog as services } from '../data/serviceCatalog';
 import { submitLeadToGoogleSheet } from '../lib/googleSheets';
 import { goToThankYou } from '../lib/enquiryConfirmation';
 

@@ -1,5 +1,11 @@
 # Verification report
 
+## Loading performance — 31 October 2026
+
+Reproduced a mobile Lighthouse score of 77 on the live homepage before changes. Split page modules, removed service copy from shared navigation/form bundles, inlined page styles and preloaded homepage dependencies. The user approved loading GTM after initial rendering; the container still loads on idle after paint or immediately on an earlier interaction. No analytics tags were removed. Fixed low-contrast Contact helper text found during accessibility checks.
+
+Type checking, the production build and all 26 tests passed. A new regression check preserves the service catalog and checks the GTM loader's once-only execution and queued events. All 20 pages passed HTTP, hydration, refresh/back/forward and keyboard FAQ checks at mobile/desktop widths. Contact contrast was corrected and rechecked after the initial audit. Mocked browser checks passed mobile navigation, homepage goals, service prefill, retained error values, single submission, thank-you navigation and refresh. No live enquiry was submitted. Evidence is under `.qa/audit/optimized-oct31*`. The first local mobile run scored 98 but did not capture a completed GTM download; it is not a reliable live performance result.
+
 ## Vercel production indexing — 27 October 2026
 
 The live sitemap returned HTTP 200 with no URLs, robots.txt blocked all crawling, and the homepage and SEO overview contained noindex metadata. Canonicals were correct. The deployed build had used the previous preview default because production indexing was not enabled.

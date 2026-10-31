@@ -67,7 +67,7 @@ After an acknowledged submission, the shared form opens `/thank-you/` with a sma
 
 Google Tag Manager container `GTM-WRZZBS6F` is installed in the shared `index.html` template: its loader is near the start of the head and its noscript iframe is immediately after the opening body tag. Prerendering includes both snippets once on all 20 pages and the 404 page, including local previews. Container tags and triggers are managed in Google Tag Manager; their published configuration has not been verified here. No separate GA4 ID was added.
 
-The browser also emits `justgrow:analytics` CustomEvents with non-personal data for phone/email clicks, service CTAs and acknowledged enquiries. These existing events are not automatically forwarded to GTM's `dataLayer` by this installation.
+The GTM loader now waits until the page has loaded and painted, then runs at the next idle opportunity (with a 1.5-second maximum idle wait); an earlier pointer or keyboard interaction starts it immediately. The container and noscript fallback are preserved. Very short visits may be measured differently. The browser also emits `justgrow:analytics` CustomEvents with non-personal data for phone/email clicks, service CTAs and acknowledged enquiries. These existing events are not automatically forwarded to GTM's `dataLayer` by this installation.
 
 Phone/email clicks are micro-conversions. `enquiry_confirmed` is emitted only after the API confirms a sheet acknowledgement; it is not a qualified lead or a sale. Event detail contains event name, service slug, route path and (for clicks) CTA position, not form contents or query strings.
 
@@ -76,3 +76,5 @@ Phone/email clicks are micro-conversions. `enquiry_confirmed` is emitted only af
 See the [complete audit and launch blockers](docs/AUDIT.md), [performance comparison](docs/AUDIT-PERFORMANCE.md), [handover and route inventory](docs/HANDOVER.md) and [earlier verification history](docs/QA.md). Commercial engagement terms, retention practices and any future work/testimonials need owner review. Do not publish invented case studies, office locations, account eligibility or results.
 
 The design uses system sans-serif fonts, original SVG/CSS visuals and no WebGL, remote font requests or image-generation dependencies.
+
+Pages are selected asynchronously by `src/loadPage.tsx` for both prerendering and browser hydration. The initial HTML stays complete while the browser loads only the selected page's code. Header/footer links and form choices use the small `serviceCatalog.ts`, checked against the full service content by tests. Prerendering inlines styles to avoid a render-blocking CSS request; the homepage includes only base and homepage styles and preloads its own JavaScript dependencies. Local development still loads the full stylesheet. Set `AUDIT_ORIGIN` to measure a deployed site with `scripts/audit-performance.mjs`; reports are stored under `.qa/` and are specific to their test environment.
