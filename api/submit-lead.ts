@@ -1,4 +1,4 @@
-import { handleLead } from './lead-handler';
+import { handleLead } from './lead-handler.js';
 
 export default async function handler(req: any, res?: any) {
   // 1. Standard Node HTTP handler: handler(req, res)
