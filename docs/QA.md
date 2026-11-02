@@ -1,5 +1,11 @@
 # Verification report
 
+## Background analytics and homepage styles — 2 November 2026
+
+Three live mobile measurements of the October 31 deployment scored 75, 77 and 75 with Accessibility, Best Practices and SEO at 100. GTM/GA still contributed substantial blocking despite deferred loading. The user approved testing background analytics. Added pinned Partytown build assets and dataLayer forwarding, retaining the existing GTM container, noscript iframe and automatic standard-execution fallback. Removed unused homepage styles during prerendering while retaining menu/goal states. The experimental content-visibility rule was discarded because it did not establish a clear benefit.
+
+Local worker and unsupported-browser fallback checks each sent exactly one Analytics page_view and received HTTP 204 without browser errors. The worker path kept GTM off the main window. Type checking, the build and all 26 tests passed; homepage/Contact browser accessibility checks and mocked menu, goal, enquiry-error/success and refresh checks passed. No live enquiry was submitted. Evidence: `.qa/audit/worker-nov02*`. These request checks verify transport, not GA dashboard attribution or every possible future GTM tag.
+
 ## Loading performance — 31 October 2026
 
 Reproduced a mobile Lighthouse score of 77 on the live homepage before changes. Split page modules, removed service copy from shared navigation/form bundles, inlined page styles and preloaded homepage dependencies. The user approved loading GTM after initial rendering; the container still loads on idle after paint or immediately on an earlier interaction. No analytics tags were removed. Fixed low-contrast Contact helper text found during accessibility checks.

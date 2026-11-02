@@ -2,11 +2,16 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
+import { partytownSnippet } from '@qwik.dev/partytown/integration';
+import { partytownVite } from '@qwik.dev/partytown/utils';
 
 export default defineConfig(() => {
   return {
     build: { manifest: true },
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(),
+      partytownVite({ dest: path.resolve('dist/~partytown'), debug: false }),
+      { name: 'tracking-worker', transformIndexHtml: (html: string) => html.replace('<!--tracking-worker-->', `<script>${partytownSnippet({ forward: ['dataLayer.push'] })}</script>`) },
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

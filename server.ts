@@ -45,6 +45,9 @@ async function startServer() {
       return existsSync(file) ? sendStatic(req, res, file, true) : next();
     });
     for (const file of ['sitemap.xml', 'favicon.svg', 'share-card.svg', 'share-card.png']) app.get('/' + file, (req, res) => sendStatic(req, res, path.join(dist, file)));
+    for (const file of ['partytown.js', 'partytown-sw.js', 'partytown-atomics.js', 'partytown-media.js']) {
+      app.get('/~partytown/' + file, (req, res) => sendStatic(req, res, path.join(dist, '~partytown', file)));
+    }
     app.get('*', (req, res) => {
       const route = canonicalPagePath(req.path, pageRoutes);
       if (!route) return sendStatic(req, res.status(404).set('X-Robots-Tag', 'noindex, nofollow'), path.join(dist, '404.html'));
