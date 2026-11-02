@@ -43,7 +43,7 @@ try {
   const screenshot = async name => { const data = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }); writeFileSync(path.join(output, name + '.png'), Buffer.from(data.data, 'base64')); };
 
 
-  const requests=[],responses=[],targets=[]; let sessionRequestId=-1;
+  const requests=[],responses=[],targets=[],deprecations=[]; let sessionRequestId=-1;
   const originalHandler=socket.onmessage;
   socket.onmessage=event=>{
     const message=JSON.parse(event.data);
@@ -51,25 +51,29 @@ try {
       targets.push(message.params.targetInfo.type);
       socket.send(JSON.stringify({id:sessionRequestId--,sessionId:message.params.sessionId,method:'Network.enable'}));
       socket.send(JSON.stringify({id:sessionRequestId--,sessionId:message.params.sessionId,method:'Runtime.enable'}));
+      socket.send(JSON.stringify({id:sessionRequestId--,sessionId:message.params.sessionId,method:'Audits.enable'}));
       socket.send(JSON.stringify({id:sessionRequestId--,sessionId:message.params.sessionId,method:'Target.setAutoAttach',params:{autoAttach:true,waitForDebuggerOnStart:false,flatten:true}}));
     }
     if(message.method==='Network.requestWillBeSent') requests.push({url:message.params.request.url,session:message.sessionId||'main'});
     if(message.method==='Network.responseReceived') responses.push({url:message.params.response.url,status:message.params.response.status,session:message.sessionId||'main'});
+    if(message.method==='Audits.issueAdded'&&message.params.issue.code==='DeprecationIssue') deprecations.push(message.params.issue.details);
     if(message.id<0)return;
     originalHandler(event);
   };
   await send('Network.enable');
+  await send('Audits.enable');
   await send('Target.setAutoAttach',{autoAttach:true,waitForDebuggerOnStart:false,flatten:true});
   if(process.env.NO_WORKER==='true')await send('Page.addScriptToEvaluateOnNewDocument',{source:'delete Navigator.prototype.serviceWorker;'});
   await viewport(390);await navigate('/');
   for(let i=0;i<60;i++){await pause(500);if(responses.some(r=>r.url.includes('/g/collect')&&r.status===204))break;}
   const tracking=await evaluate("({workerScripts:[...document.querySelectorAll('script[type^=\"text/partytown\"]')].map(s=>({type:s.type,src:s.src})),controller:!!navigator.serviceWorker?.controller,registrations:null,hasGtmOnMain:!!window.google_tag_manager})");
-  const report={targets,tracking,requests:requests.filter(r=>/partytown|googletagmanager|google-analytics/.test(r.url)),responses:responses.filter(r=>/partytown|googletagmanager|google-analytics/.test(r.url)),errors};
+  const report={targets,tracking,requests:requests.filter(r=>/partytown|googletagmanager|google-analytics/.test(r.url)),responses:responses.filter(r=>/partytown|googletagmanager|google-analytics/.test(r.url)),errors,deprecations};
   writeFileSync(path.join(output,'tracking.json'),JSON.stringify(report,null,2));
   const hits=requests.filter(r=>r.url.includes('/g/collect')&&new URL(r.url).searchParams.get('en')==='page_view');
   assert.equal(hits.length,1,'Exactly one page-view request');
   assert.ok(responses.some(r=>r.url.includes('/g/collect')&&r.status===204),'Analytics accepted the request');
   assert.equal(tracking.hasGtmOnMain,process.env.NO_WORKER==='true','Worker execution, with standard fallback only when unsupported');
   assert.equal(errors.length,0,'No browser or worker errors');
+  assert.equal(deprecations.length,0,'No deprecated browser API use');
   console.log(JSON.stringify({targets,tracking,pageViews:requests.filter(r=>r.url.includes('/g/collect')&&new URL(r.url).searchParams.get('en')==='page_view').length,collectStatuses:responses.filter(r=>r.url.includes('/g/collect')).map(r=>r.status),errors},null,2));
 } finally {socket?.close();chrome.kill();}
