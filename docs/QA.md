@@ -1,5 +1,11 @@
 # Verification report
 
+## Live performance release verified — 3 November 2026
+
+Deployed `32ea071` and the compatibility correction `928d725` to the existing `main` branch. The first worker deployment exposed a deprecated `window.fence` probe in Partytown 1.0.3; the guarded build patch now excludes that unused interface. The correction passed the build and all 26 tests. Live worker and unsupported-browser fallback checks each delivered exactly one Analytics page view (HTTP 204), with no browser errors or deprecated API issues. The live worker check was repeated successfully on November 3. Homepage canonical remains `https://www.justgrow.in/`, production metadata permits indexing, the sitemap contains 19 URLs, worker assets return JavaScript, and an unsupported GET to the form API returns the expected 405 JSON. No live enquiry was sent.
+
+Final live homepage Lighthouse runs on November 3: mobile Performance **99, 100, 100**; desktop **100, 100, 100**. Accessibility, Best Practices and SEO were **100 in all six runs**. These are local Lighthouse 12.8.2 measurements against the live site, not Google-hosted PageSpeed reports or field data. Full context and metrics: [performance evidence](AUDIT-PERFORMANCE.md). Saved reports: `.qa/audit/worker-nov03-final-live/`.
+
 ## Background analytics and homepage styles — 2 November 2026
 
 Three live mobile measurements of the October 31 deployment scored 75, 77 and 75 with Accessibility, Best Practices and SEO at 100. GTM/GA still contributed substantial blocking despite deferred loading. The user approved testing background analytics. Added pinned Partytown build assets and dataLayer forwarding, retaining the existing GTM container, noscript iframe and automatic standard-execution fallback. Removed unused homepage styles during prerendering while retaining menu/goal states. The experimental content-visibility rule was discarded because it did not establish a clear benefit.

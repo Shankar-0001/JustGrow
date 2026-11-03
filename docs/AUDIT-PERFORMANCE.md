@@ -1,6 +1,25 @@
 # JustGrow performance evidence
 
-This is a saved measurement snapshot from before the removal of sections after FAQs and installation of Google Tag Manager. Keep it for the before/after comparison; its scores are not a fresh measurement of later builds or the externally managed GTM container. See [verification history](QA.md) for subsequent checks.
+## Live homepage verification — 3 November 2026
+
+Measured `https://www.justgrow.in/` after deployment of `928d725`, with the normal GTM container enabled through the approved background worker. These are Lighthouse 12.8.2 runs from local Chrome 156 against the public website, not new Google PageSpeed Insights reports or field Core Web Vitals. Three mobile and three desktop runs were captured sequentially between 08:28 and 08:30 UTC. No concurrent build or browser audit ran during measurement.
+
+| Profile | Performance runs | Median Performance | Accessibility | Best Practices | SEO | Median LCP | Median TBT | CLS |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Mobile | 99, 100, 100 | 100 | 100 | 100 | 100 | 1.39 s | 47 ms | 0 |
+| Desktop | 100, 100, 100 | 100 | 100 | 100 | 100 | 0.33 s | 0 ms | 0 |
+
+Accessibility, Best Practices and SEO were 100 in every run. The November 2 pre-worker live mobile baseline scored 75, 77 and 75. The changes split route code, trimmed homepage styles and moved GTM/GA execution off the main thread. A guarded build patch extends Partytown 1.0.3's deprecated-interface exclusions to avoid probing `window.fence`; the final runs have no deprecated-API warning. It does not alter browser globals or disable tracking.
+
+A separate live browser check on November 3 confirmed that GTM and GA ran in the worker, exactly one `page_view` request received HTTP 204, and no browser errors or deprecated API issues were recorded. The unsupported-browser fallback was also checked on the live build on November 2, with one accepted page view. This verifies request delivery, not GA dashboard attribution or future container changes. No real enquiry was submitted during testing.
+
+Evidence: `.qa/audit/worker-nov03-final-live/lighthouse/` and `tracking.json`; baseline: `.qa/audit/live-nov02-before/lighthouse/`. Commands: `AUDIT_ORIGIN=https://www.justgrow.in`, `AUDIT_ROUTES=["/"]`, `AUDIT_RUNS=3`, then `node scripts/audit-performance.mjs <new-report-name>`. Tracking: `node scripts/audit-tracking.mjs <new-report-name>` with the same origin. The scripts use the locally installed audit tools described in [AUDIT.md](AUDIT.md).
+
+These results cover the homepage. Scores can vary with network, device, browser, Lighthouse version and GTM changes; they do not guarantee that every future PageSpeed run or every route will score 100.
+
+## Historical local audit — 25–26 October 2026
+
+The following snapshot predates the removal of sections after FAQs and installation of Google Tag Manager. Its scores are historical local-build measurements, not results for the current deployment. See [verification history](QA.md) for subsequent checks.
 
 Recorded 2026-10-25T16:34:20.206Z through 2026-10-26T02:14:39.498Z (UTC). All results are local production-build laboratory measurements, not measurements of the currently deployed website or field Core Web Vitals.
 
