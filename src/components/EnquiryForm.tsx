@@ -36,8 +36,7 @@ export function EnquiryForm({ initialService = 'general', eyebrow = 'YOUR PROJEC
     if (result.success && result.syncedToSheet) {
       setStatus('success');
       try { sessionStorage.removeItem('jg-enquiry-id'); } catch { /* optional storage */ }
-      window.dispatchEvent(new CustomEvent('justgrow:analytics', { detail: { event: 'enquiry_confirmed', service_slug: service, page_path: window.location.pathname } }));
-      try { goToThankYou(Boolean(phone)); } catch { /* Keep the confirmed inline receipt if navigation is unavailable. */ }
+      try { goToThankYou(Boolean(phone), service); } catch { /* Keep the confirmed inline receipt if navigation is unavailable. */ }
     } else {
       sending.current = false;
       setStatus('error');

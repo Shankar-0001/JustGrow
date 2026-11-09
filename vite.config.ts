@@ -10,7 +10,13 @@ export default defineConfig(() => {
     build: { manifest: true },
     plugins: [react(), tailwindcss(),
       partytownVite({ dest: path.resolve('dist/~partytown'), debug: false }),
-      { name: 'tracking-worker', transformIndexHtml: (html: string) => html.replace('<!--tracking-worker-->', `<script>${partytownSnippet({ forward: ['dataLayer.push'] })}</script>`) },
+      { name: 'tracking-worker', transformIndexHtml: (html: string) => html.replace('<!--tracking-worker-->', `<script>${partytownSnippet({
+        forward: ['dataLayer.push'],
+        // GTM's preview bootstrap has no CORS headers. Load this debug-only
+        // script in the page context while keeping the production container
+        // and its other tags in the worker.
+        loadScriptsOnMainThread: [/googletagmanager\.com\/debug\/bootstrap/],
+      })}</script>`) },
     ],
     resolve: {
       alias: {

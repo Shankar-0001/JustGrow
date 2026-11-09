@@ -1,13 +1,25 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
-import { confirmationMessage, readEnquiryReceipt, type EnquiryReceipt } from '../lib/enquiryConfirmation';
+import { confirmationMessage, markEnquiryConversionTracked, readEnquiryReceipt, type EnquiryReceipt } from '../lib/enquiryConfirmation';
+import { sendAnalyticsEvent } from '../lib/analytics';
 
 export default function ThankYou() {
   const [receipt, setReceipt] = useState<EnquiryReceipt | null>(null);
 
   useEffect(() => {
     const received = readEnquiryReceipt(window.history.state);
-    setReceipt(received);
+    const tracked = markEnquiryConversionTracked(received);
+    if (received && tracked) {
+      window.history.replaceState({ ...window.history.state, justgrowEnquiry: tracked }, '', window.location.href);
+      setReceipt(tracked);
+      sendAnalyticsEvent({
+        event: 'enquiry_confirmed',
+        service_slug: received.serviceSlug || 'general',
+        page_path: window.location.pathname,
+      });
+    } else {
+      setReceipt(received);
+    }
   }, []);
 
   return (

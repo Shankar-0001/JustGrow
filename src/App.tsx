@@ -3,6 +3,7 @@ import { Header, Footer } from './components/SiteLayout';
 import { serviceCatalog as services } from './data/serviceCatalog';
 import { servicePath } from './data/site';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { sendAnalyticsEvent } from './lib/analytics';
 export default function App({ path = '/', children }: { path?: string; children: ReactNode }) {
   const route = path === '/' ? '/' : path.replace(/\/+$/, '') + '/';
   const service = services.find(s => servicePath(s) === route);
@@ -11,8 +12,18 @@ export default function App({ path = '/', children }: { path?: string; children:
       const link = (event.target as Element).closest('a');
       if (!link) return;
       const href = link.getAttribute('href') || '';
-      const name = href.startsWith('tel:') ? 'phone_click' : href.startsWith('mailto:') ? 'email_click' : link.dataset.event;
-      if (name) window.dispatchEvent(new CustomEvent('justgrow:analytics', { detail: { event: name, page_path: route, service_slug: link.dataset.service || service?.slug || 'general', cta_position: link.closest('header') ? 'header' : link.closest('footer') ? 'footer' : 'content' } }));
+      const name = href.startsWith('tel:') ? 'phone_click'
+        : href.startsWith('mailto:') ? 'email_click'
+        : /^https?:\/\/wa\.me\//i.test(href) ? 'whatsapp_click'
+        : link.dataset.event;
+      if (name === 'phone_click' || name === 'email_click' || name === 'whatsapp_click' || name === 'service_cta_click') {
+        sendAnalyticsEvent({
+          event: name,
+          page_path: route,
+          service_slug: link.dataset.service || service?.slug || 'general',
+          cta_position: link.closest('header') ? 'header' : link.closest('footer') ? 'footer' : 'content',
+        });
+      }
     };
     document.addEventListener('click', listener);
     return () => document.removeEventListener('click', listener);

@@ -55,7 +55,7 @@ try {
   await send('Network.setBlockedURLs', { urls: ['*googletagmanager.com/*', '*google-analytics.com/*'] });
   await send('Fetch.enable', { patterns: [{ urlPattern: '*://*/api/submit-lead', requestStage: 'Request' }] });
   await send('Runtime.addBinding', { name: 'qaEvent' });
-  await send('Page.addScriptToEvaluateOnNewDocument', { source: `window.addEventListener('justgrow:analytics', event => { if(event.detail.event === 'enquiry_confirmed') window.qaEvent(JSON.stringify(event.detail)); });` });
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: `window.addEventListener('justgrow:analytics', event => { if(event.detail.event === 'enquiry_confirmed') queueMicrotask(() => window.qaEvent(JSON.stringify({ detail: event.detail, dataLayer: (window.dataLayer || []).filter(item => item.event === 'enquiry_confirmed') }))); });` });
   const waitFor = async expression => {
     for (let i = 0; i < 100; i++) {
       await pause(80);
@@ -90,13 +90,18 @@ try {
     await waitFor(`location.pathname === '/thank-you/' && !!document.querySelector('.thank-you-dialog[open]')`);
     assert.equal(requests.length - beforeRequests, 1, route + ': triple submit sends once');
     assert.equal(events.length - beforeEvents, 1, route + ': one acknowledged enquiry event');
-    assert.equal(events.at(-1).page_path, route);
-    assert.equal(events.at(-1).service_slug, initialService);
+    assert.equal(events.at(-1).detail.page_path, route);
+    assert.equal(events.at(-1).detail.service_slug, initialService);
+    assert.equal(events.at(-1).dataLayer.length, 1, route + ': confirmation enters dataLayer once');
+    assert.equal(events.at(-1).dataLayer[0].service_slug, initialService);
+    assert.equal(Object.keys(events.at(-1).dataLayer[0]).some(key => /email|phone|name|message/i.test(key)), false);
     assert.match(await evaluate(`document.querySelector('#thank-you-popup-message').textContent`), /call/);
     assert.equal(await evaluate(`document.querySelector('dialog').contains(document.activeElement)`), true);
     assert.equal(await evaluate(`location.search + location.hash`), '');
     const receipt = await evaluate('history.state.justgrowEnquiry');
-    assert.deepEqual(Object.keys(receipt).sort(), ['phoneProvided', 'popupShown', 'receivedAt']);
+    assert.deepEqual(Object.keys(receipt).sort(), ['conversionTracked', 'phoneProvided', 'popupShown', 'receivedAt', 'serviceSlug']);
+    assert.equal(receipt.conversionTracked, true);
+    assert.equal(receipt.serviceSlug, initialService);
     assert.equal(receipt.popupShown, true);
     if (route === '/contact/') {
       for (const width of [360, 1440]) {
